@@ -22,16 +22,10 @@ module top_module (
             q_reg <= q_next;
     end
 
-    assign q_next[0] = q_reg[1] ^ 1'b0;
+    localparam      BASE    = 1,
+                    LIMIT   = 511;
 
-    generate
-    genvar i;
-        for (i = 1; i < 511; i = i + 1) begin : loop
-            assign q_next[i] = q_reg[i+1] ^ q_reg[i-1];
-        end
-    endgenerate
-
-    assign q_next[511] = 1'b0 ^ q_reg[510];
+    assign q_next = {1'b0 ^ q_reg[510], q_reg[LIMIT - 1 + 1:BASE + 1] ^ q_reg[LIMIT - 1 - 1:BASE - 1], q_reg[1] ^ 1'b0};
 
     assign q = q_reg;
 

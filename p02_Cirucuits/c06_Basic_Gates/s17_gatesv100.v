@@ -13,25 +13,13 @@ module top_module (
     output  [99:0]  out_different
 );
 
-    genvar i;
-    generate
-        for (i = 0; i < 99; i = i + 1) begin : loop_both
-            assign out_both[i] = in[i+1] & in[i];
-        end
-    endgenerate
+    localparam      BASE    = 0,
+                    LIMIT   = 99;
 
-    generate
-        for (i = 0; i < 99; i = i + 1) begin : loop_any
-            assign out_any[i+1] = in[i+1] | in[i];
-        end
-    endgenerate
+    assign out_both = in[LIMIT - 1 + 1:BASE + 1] & in[LIMIT - 1:BASE];
 
-    generate
-        for (i = 0; i < 99; i = i + 1) begin : loop_different
-            assign out_different[i] = (in[i+1] != in[i]);
-        end
-    endgenerate
+    assign out_any  = in[LIMIT - 1 + 1:BASE + 1] | in[LIMIT - 1:BASE];
 
-    assign out_different[99] = (in[0] != in[99]);
+    assign out_different = {in[0] ^ in[99], in[LIMIT - 1 + 1:BASE + 1] ^ in[LIMIT - 1:BASE]};
 
 endmodule

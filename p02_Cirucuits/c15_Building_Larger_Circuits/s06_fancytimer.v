@@ -2,8 +2,6 @@
 //
 // https://hdlbits.01xz.net/wiki/Exams/review2015_fancytimer
 //
-// This code still fails in the tests but pass my test
-//
 //
 
 `default_nettype none
@@ -59,8 +57,8 @@ module top_module (
     //
     // Shift stage
     //
-    reg     [4:0]   delay;
-    reg     [4:0]   delay_next;
+    reg     [3:0]   delay;
+    reg     [3:0]   delay_next;
 
     always@(posedge clk) begin
         if (reset)
@@ -74,7 +72,7 @@ module top_module (
         SHIFT_B0    ,
         SHIFT_B1    ,
         SHIFT_B2    ,
-        SHIFT_B3    : delay_next = {delay[3:0], data};
+        SHIFT_B3    : delay_next = {delay[2:0], data};
         default     : delay_next = delay;
         endcase
     end
@@ -86,7 +84,7 @@ module top_module (
 
     assign counter_load = (state == SHIFT_B3);
 
-    reg     [4:0]   counter;
+    reg     [3:0]   counter;
 
     always@(posedge clk) begin
         if(reset)
@@ -131,6 +129,6 @@ module top_module (
     assign counter_done = (~|counter) & timer_tick;
 
     assign done = (state == WAIT_ACK);
-    assign count = counter[3:0];
+    assign count = counter;
     assign counting = (state == COUNT_DOWN);
 endmodule
